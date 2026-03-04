@@ -1,0 +1,37 @@
+/* Enhanced styling for longer diary entries */
+
+.diary-page {
+  min-height: 120px;
+}
+
+.diary-page p {
+  margin-bottom: 1rem !important;
+  line-height: 1.6 !important;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Better readability for long paragraphs */
+.diary-page .font-handwriting {
+  text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
+}
+
+/* Responsive adjustments for longer content */
+@media (min-width: 768px) {
+  .diary-page {
+    max-width: none;
+  }
+}
+
+/* Line clamp utility for templates */
+.line-clamp-3 {
+  display: -webkit-box;
+  display: box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  box-orient: vertical;
+  overflow: hidden;
+}
