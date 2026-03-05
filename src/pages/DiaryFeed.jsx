@@ -2,11 +2,16 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
+import { useTheme } from '../context/ThemeContext'
 import DiaryCard from '../components/DiaryCard'
+import DiaryCardList from '../components/DiaryCardList'
+import DiaryCardGrid from '../components/DiaryCardGrid'
+import DiaryCardMinimal from '../components/DiaryCardMinimal'
 import EntryComposer from '../components/EntryComposer'
 import SearchBar from '../components/SearchBar'
 import StatsPanel from '../components/StatsPanel'
 import ThemeSwitcher from '../components/ThemeSwitcher'
+import LayoutSwitcher from '../components/LayoutSwitcher'
 import ExportPanel from '../components/ExportPanel'
 import CustomizationPanel from '../components/CustomizationPanel'
 import { testCreateAndDelete } from './test-create-delete.js'
@@ -46,6 +51,7 @@ const FAKE_ENTRIES = [
 
 export default function DiaryFeed() {
     const { user, signOut, isDummy } = useAuth()
+    const { layout, setLayout } = useTheme()
     const [entries, setEntries] = useState([])
     const [loading, setLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState('')
@@ -248,6 +254,7 @@ export default function DiaryFeed() {
 
                         {/* Center Section - Action Buttons */}
                         <div className="flex items-center gap-3">
+                            <LayoutSwitcher layout={layout} setLayout={setLayout} />
                             <button
                                 onClick={() => setIsStatsOpen(true)}
                                 className="w-10 h-10 rounded-full flex items-center justify-center glass-card hover:bg-white/10 transition-all hover:scale-105"
@@ -430,17 +437,54 @@ export default function DiaryFeed() {
                                     <div className="h-[1px] flex-1 bg-white/10" />
                                 </div>
 
-                                <div className="space-y-8">
-                                    {dateEntries.map((entry, i) => (
-                                        <DiaryCard
-                                            key={entry.id}
-                                            entry={entry}
-                                            index={i}
-                                            onDelete={() => handleDeleteEntry(entry.id)}
-                                            onToggleFavorite={() => handleToggleFavorite(entry.id, entry.is_favorite)}
-                                            onEdit={(e) => setEditingEntry(e)}
-                                        />
-                                    ))}
+                                <div className={layout === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" : layout === 'minimal' ? "space-y-1" : "space-y-8"}>
+                                    {dateEntries.map((entry, i) => {
+                                        if (layout === 'list') {
+                                            return (
+                                                <DiaryCardList
+                                                    key={entry.id}
+                                                    entry={entry}
+                                                    index={i}
+                                                    onDelete={handleDeleteEntry}
+                                                    onEdit={setEditingEntry}
+                                                    onToggleFavorite={handleToggleFavorite}
+                                                />
+                                            )
+                                        } else if (layout === 'grid') {
+                                            return (
+                                                <DiaryCardGrid
+                                                    key={entry.id}
+                                                    entry={entry}
+                                                    index={i}
+                                                    onDelete={handleDeleteEntry}
+                                                    onEdit={setEditingEntry}
+                                                    onToggleFavorite={handleToggleFavorite}
+                                                />
+                                            )
+                                        } else if (layout === 'minimal') {
+                                            return (
+                                                <DiaryCardMinimal
+                                                    key={entry.id}
+                                                    entry={entry}
+                                                    index={i}
+                                                    onDelete={handleDeleteEntry}
+                                                    onEdit={setEditingEntry}
+                                                    onToggleFavorite={handleToggleFavorite}
+                                                />
+                                            )
+                                        } else {
+                                            return (
+                                                <DiaryCard
+                                                    key={entry.id}
+                                                    entry={entry}
+                                                    index={i}
+                                                    onDelete={handleDeleteEntry}
+                                                    onEdit={() => setEditingEntry(entry)}
+                                                    onToggleFavorite={handleToggleFavorite}
+                                                />
+                                            )
+                                        }
+                                    })}
                                 </div>
                             </div>
                         ))
