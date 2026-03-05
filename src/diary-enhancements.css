@@ -28,10 +28,8 @@
 /* Line clamp utility for templates */
 .line-clamp-3 {
   display: -webkit-box;
-  display: box;
   -webkit-line-clamp: 3;
   line-clamp: 3;
   -webkit-box-orient: vertical;
-  box-orient: vertical;
   overflow: hidden;
 }
